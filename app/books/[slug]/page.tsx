@@ -1,0 +1,6 @@
+import Link from "next/link";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { publishedBook } from "@/lib/books";
+export const dynamic = "force-dynamic";
+export default async function BookPage({ params }: { params: Promise<{ slug: string }> }) { const book = await publishedBook((await params).slug); if (!book) notFound(); return <main id="main-content" tabIndex={-1} className="page pt-28 pb-32"><article className="max-w-[680px]">{book.cover && <Image src={book.cover} alt={`${book.title} 표지`} width={640} height={960} className="mb-12 aspect-[2/3] w-full max-w-[320px] object-cover" />}<h1 className="book-type text-[25px] font-normal">{book.title}</h1>{book.description && <p className="mt-7 max-w-[560px] whitespace-pre-wrap text-[15px] text-neutral-600">{book.description}</p>}</article>{book.poems.length ? <ol className="mt-20 max-w-[680px]">{book.poems.map((poem, index) => <li key={poem.id}><Link href={`/books/${book.slug}/${poem.id}`} className="grid grid-cols-[2rem_1fr] gap-4 py-5 no-underline hover:no-underline"><span className="text-xs text-neutral-400">{String(index + 1).padStart(2, "0")}</span><span className="book-type text-[18px]">{poem.title}</span></Link></li>)}</ol> : <p className="mt-20 text-neutral-500">공개된 시가 아직 없습니다.</p>}</main>; }

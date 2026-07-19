@@ -1,0 +1,64 @@
+[
+  {
+    "id": "outdoor-parking-lot",
+    "title": "야외주차장",
+    "date": "2026-07-16",
+    "visibility": "public",
+    "independentlyPublished": true,
+    "body": [
+      "일본은 노상방뇨 같은 거 안한다더니 내가 본 것만 세 명이다!",
+      "",
+      "담배를 피우러 우르르 나갈 때",
+      "슬쩍",
+      "",
+      "나를 봤니?",
+      "묻는다",
+      "",
+      "담배 피우러 나간 아이들이 돌아오고",
+      "별안간 그애가 울어서",
+      "",
+      "그러려고 그런 건 아니었어 미안해",
+      "라고 말은 했지만",
+      "",
+      "우리는 오늘 처음 본 사이잖아"
+    ]
+  },
+  {
+    "id": "46de5f88-2327-47f4-92d9-119aa625e22f",
+    "title": "버터구이오징어맛",
+    "body": [
+      "버터구이 오징어맛은",
+      "먹다가 다 쏟는게",
+      "제 맛이다"
+    ],
+    "visibility": "public",
+    "originBookId": "b843f9fe-31d1-47c9-b149-dbbc8ffe5f1f",
+    "independentlyPublished": false,
+    "date": "2026-07-19"
+  },
+  {
+    "id": "858250db-abef-4ef9-be47-37a6eeb55b68",
+    "title": "화끈한 매운맛",
+    "body": [
+      "막상 먹어도",
+      "그리 안매워서",
+      "캡사이신으로 샤워했다"
+    ],
+    "visibility": "public",
+    "originBookId": "b843f9fe-31d1-47c9-b149-dbbc8ffe5f1f",
+    "independentlyPublished": false,
+    "date": "2026-07-19"
+  },
+  {
+    "id": "8a717d46-750f-43a2-8491-1cba801a72ad",
+    "title": "바지에 똥사기",
+    "body": [
+      "똥싼바지가 가지고 싶어서",
+      "매일 똥을 쌌지"
+    ],
+    "visibility": "public",
+    "originBookId": "b843f9fe-31d1-47c9-b149-dbbc8ffe5f1f",
+    "independentlyPublished": false,
+    "date": "2026-07-19"
+  }
+]

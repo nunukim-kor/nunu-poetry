@@ -1,0 +1,20 @@
+import "server-only";
+import { randomUUID } from "crypto";
+import { promises as fs } from "fs";
+import path from "path";
+import { bookVisiblePoems, publishPoems, removeUnreferencedBookPoems, savePoem, type Poem } from "@/lib/poems";
+
+export type Book = { id: string; title: string; slug: string; description?: string; cover?: string; published: boolean; poemIds: string[]; draftPoemIds?: string[] };
+export type PublicBook = Book & { poems: Poem[] };
+const file = path.join(process.cwd(), "data", "books.json");
+async function read(): Promise<Book[]> { return JSON.parse(await fs.readFile(file, "utf8")) as Book[]; }
+async function write(books: Book[]) { await fs.writeFile(file, JSON.stringify(books, null, 2) + "\n", "utf8"); }
+async function withPublishedPoems(book: Book): Promise<PublicBook> { const poems = await bookVisiblePoems(); const byId = new Map(poems.map((poem) => [poem.id, poem])); return { ...book, poems: book.poemIds.map((id) => byId.get(id)).filter((poem): poem is Poem => Boolean(poem)) }; }
+export async function publishedBooks() { return Promise.all((await read()).filter((book) => book.published).map(withPublishedPoems)); }
+export async function publishedBook(slug: string) { const book = (await read()).find((item) => item.slug === slug && item.published); return book ? withPublishedPoems(book) : undefined; }
+export async function adminBooks() { return read(); }
+export async function adminBook(id: string) { return (await read()).find((book) => book.id === id); }
+export async function poemBookMemberships() { const memberships = new Map<string, string[]>(); for (const book of await read()) for (const id of book.poemIds) memberships.set(id, [...(memberships.get(id) ?? []), book.title]); return memberships; }
+export async function saveBook(input: Omit<Book, "id"> & { id?: string }) { const books = await read(); const duplicate = books.find((book) => book.slug === input.slug && book.id !== input.id); if (duplicate) throw new Error("DUPLICATE_SLUG"); const current = input.id ? books.find((book) => book.id === input.id) : undefined; const book: Book = { id: input.id ?? randomUUID(), title: input.title, slug: input.slug, description: input.description, cover: input.cover, published: input.published, poemIds: input.poemIds, draftPoemIds: input.draftPoemIds?.length ? input.draftPoemIds : undefined }; if (current) Object.assign(current, book); else books.push(book); await write(books); return book; }
+export async function saveBookWithPoems(input: Omit<Book, "id"> & { id?: string }, newPoems: { title: string; body: string[] }[]) { const books = await read(); if (books.some((book) => book.slug === input.slug && book.id !== input.id)) throw new Error("DUPLICATE_SLUG"); const current = input.id ? books.find((book) => book.id === input.id) : undefined; const bookId = input.id ?? randomUUID(); const created = []; for (const poem of newPoems) created.push(await savePoem({ ...poem, visibility: input.published ? "public" : "private" }, { originBookId: bookId, independent: false })); const createdIds = created.map((poem) => poem.id); const included = new Set(input.poemIds); const pendingIds = (current?.draftPoemIds ?? []).filter((id) => included.has(id)); if (input.published && pendingIds.length) await publishPoems(pendingIds); const poemIds = [...input.poemIds, ...createdIds]; const removedIds = (current?.poemIds ?? []).filter((id) => !poemIds.includes(id)); const saved = await saveBook({ ...input, id: bookId, poemIds, draftPoemIds: input.published ? [] : [...pendingIds, ...createdIds] }); if (removedIds.length) { const referencedIds = new Set((await read()).flatMap((book) => book.poemIds)); await removeUnreferencedBookPoems(removedIds, referencedIds); } return saved; }
+export async function removeBook(id: string) { const books = await read(); const removed = books.find((book) => book.id === id); if (!removed) return; const remaining = books.filter((book) => book.id !== id); await write(remaining); const referencedIds = new Set(remaining.flatMap((book) => book.poemIds)); await removeUnreferencedBookPoems(removed.poemIds, referencedIds); }

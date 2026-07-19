@@ -1,0 +1,6 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import RandomDiscoveryNext from "@/app/random-discovery-next";
+import { previousPoem, publishedPoem, publishedPoems } from "@/lib/poems";
+export const dynamic = "force-dynamic";
+export default async function PoemPage({ params }: { params: Promise<{ slug: string }> }) { const poem = await publishedPoem((await params).slug); if (!poem) notFound(); const [previous, poems] = await Promise.all([previousPoem(poem), publishedPoems()]); const discoveryPoems = poems.map(({ id, title }) => ({ id, title })); return <main id="main-content" tabIndex={-1} className="page pt-28 pb-32"><article className="max-w-[580px]"><h1 className="book-type mb-16 text-[23px] font-normal leading-relaxed">{poem.title}</h1><div className="poem-body">{poem.body.join("\n")}</div></article><nav className="mt-40 flex max-w-[580px] justify-center gap-9 text-[14px]" aria-label="시 이동">{previous ? <Link href={`/poems/${previous.id}`} aria-label={`이전 시: ${previous.title}`}>Previous</Link> : <span className="text-neutral-300" aria-hidden="true">Previous</span>}<RandomDiscoveryNext currentId={poem.id} poems={discoveryPoems} /></nav></main>; }

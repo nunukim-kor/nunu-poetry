@@ -1,0 +1,4 @@
+import Link from "next/link";
+import { adminBooks } from "@/lib/books";
+export const dynamic = "force-dynamic";
+export default async function AdminBooksPage() { const books = await adminBooks(); return <main className="page pt-16 pb-24"><div className="flex max-w-[760px] items-center justify-between text-xs"><Link href="/admin">← 관리</Link><Link href="/admin/books/new">새 책</Link></div><h1 className="book-type mb-10 mt-8 text-xl font-normal">Books 관리</h1>{books.length ? <ul className="max-w-[760px]">{books.map((book) => <li key={book.id}><Link href={`/admin/books/${book.id}`} className="grid grid-cols-[1fr_auto] gap-8 py-5 no-underline hover:no-underline"><span>{book.title}<span className="ml-3 text-xs text-neutral-400">{book.published ? "공개" : "비공개"}</span></span><span className="text-xs text-neutral-500">{book.poemIds.length}편</span></Link></li>)}</ul> : <p className="text-neutral-500">등록된 책이 없습니다.</p>}</main>; }
