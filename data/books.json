@@ -1,14 +1,18 @@
 [
   {
-    "id": "b843f9fe-31d1-47c9-b149-dbbc8ffe5f1f",
-    "title": "뿌셔뿌셔",
-    "slug": "break-break",
-    "cover": "/covers/break-break.png",
+    "id": "34064612-509e-4fb8-8c53-e28c4c6dda76",
+    "title": "여가생활",
+    "slug": "break-time",
+    "cover": "/covers/break-time.jpeg",
     "published": true,
     "poemIds": [
-      "46de5f88-2327-47f4-92d9-119aa625e22f",
-      "858250db-abef-4ef9-be47-37a6eeb55b68",
-      "8a717d46-750f-43a2-8491-1cba801a72ad"
+      "9cd0b3ae-21ca-4a67-b600-84c7033f5c34",
+      "0bfe6dcb-07a9-42b7-999a-80f12ab9a500",
+      "0f9fde41-be42-47ea-b461-d9126412da68",
+      "5078c1f8-e8b7-4c87-b907-7d53853b5f14",
+      "a685a71b-f24b-4ae1-aa9c-dda462806bb0",
+      "b364cb9d-2d87-4750-a212-c3ceae39d427",
+      "2f758c04-86ab-4808-9772-57fd8e0ca279"
     ]
   }
 ]
