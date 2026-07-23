@@ -12,6 +12,7 @@ async function write(books: Book[]) { await fs.writeFile(file, JSON.stringify(bo
 async function withPublishedPoems(book: Book): Promise<PublicBook> { const poems = await bookVisiblePoems(); const byId = new Map(poems.map((poem) => [poem.id, poem])); return { ...book, poems: book.poemIds.map((id) => byId.get(id)).filter((poem): poem is Poem => Boolean(poem)) }; }
 export async function publishedBooks() { return Promise.all((await read()).filter((book) => book.published).map(withPublishedPoems)); }
 export async function publishedBook(slug: string) { const book = (await read()).find((item) => item.slug === slug && item.published); return book ? withPublishedPoems(book) : undefined; }
+export async function publishedBooksForPoem(poemId: string) { return (await read()).filter((book) => book.published && book.poemIds.includes(poemId)).map(({ title, slug }) => ({ title, slug })); }
 export async function adminBooks() { return read(); }
 export async function adminBook(id: string) { return (await read()).find((book) => book.id === id); }
 export async function poemBookMemberships() { const memberships = new Map<string, string[]>(); for (const book of await read()) for (const id of book.poemIds) memberships.set(id, [...(memberships.get(id) ?? []), book.title]); return memberships; }

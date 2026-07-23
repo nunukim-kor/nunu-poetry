@@ -13,7 +13,8 @@ button, input, textarea { font: inherit; }
 .page { width: min(100% - 112px, 1120px); margin: 0 auto; }
 .book-type { font-family: inherit; }
 .poem-body { white-space: pre-wrap; font-size: 19px; line-height: 2.15; letter-spacing: -0.01em; }
+.poem-line { display: block; }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 50; padding: .55rem .8rem; background: #181818; color: #fff; transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 [id="main-content"]:focus { outline: none; }
-@media (max-width: 640px) { .page { width: min(100% - 48px, 1120px); } .poem-title { font-size: 20px; } .poem-body { font-size: 15.5px; line-height: 2.05; } }
+@media (max-width: 640px) { .page { width: min(100% - 48px, 1120px); } .poem-title { font-size: 20px; } .poem-body { font-size: 15.5px; line-height: 2.05; } .poem-line { padding-left: 1.5em; text-indent: -1.5em; } }
