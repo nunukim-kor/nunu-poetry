@@ -11,6 +11,11 @@ export const metadata: Metadata = {
   authors: [{ name: "김누누", url: "https://nunukim.kr" }],
   creator: "김누누",
   publisher: "김누누",
+  verification: {
+    other: {
+      "naver-site-verification": "7e8a68c508cade01c86f01d8584cd2f94c3a38bf",
+    },
+  },
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
