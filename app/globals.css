@@ -13,7 +13,7 @@ button, input, textarea { font: inherit; }
 .page { width: min(100% - 112px, 1120px); margin: 0 auto; }
 .book-type { font-family: inherit; }
 .poem-body { white-space: pre-wrap; font-size: 19px; line-height: 2.15; letter-spacing: -0.01em; }
-.poem-line { display: block; padding-left: 1.5em; }
+.poem-line { display: block; text-indent: 1.5em; }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 50; padding: .55rem .8rem; background: #181818; color: #fff; transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 [id="main-content"]:focus { outline: none; }
