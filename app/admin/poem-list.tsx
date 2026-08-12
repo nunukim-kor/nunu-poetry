@@ -8,7 +8,7 @@ type ListPoem = {
   id: string;
   title: string;
   date: string;
-  visibility: "public" | "private";
+  visibility: "public" | "private" | "book_only";
   bookTitles: string[];
 };
 
