@@ -1283,14 +1283,14 @@
       "요즘은 그냥 행복하다",
       "",
       "가끔 ",
-      "머리가 아플 떼도 있는데",
+      "머리가 아플 때도 있는데",
       "그거 빼고는 행복한",
       "그런 느낌"
     ],
     "visibility": "book_only",
     "date": "2026-08-31",
     "originBookId": "dcb11165-87ef-458e-bb1e-b28ce7d3db3b",
-    "independentlyPublished": false
+    "independentlyPublished": true
   },
   {
     "id": "d07c87f6-e4d8-44e2-ae73-63495e76437e",
