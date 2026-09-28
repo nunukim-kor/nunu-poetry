@@ -16,7 +16,7 @@ export default async function AdminPage() {
   return <main className="page pt-20 pb-28">
     <header className="flex items-center justify-between pb-8">
       <h1 className="book-type text-xl font-normal">관리</h1>
-      <div className="flex gap-6 text-xs"><Link href="/admin/new">새 시</Link><Link href="/admin/books">Books 관리</Link><Link href="/admin/about">소개 수정</Link><LogoutButton /></div>
+      <div className="flex gap-6 text-xs"><Link href="/admin/new">새 시</Link><Link href="/admin/books">Books 관리</Link><Link href="/admin/sanmoon">Sanmoon 관리</Link><Link href="/admin/about">소개 수정</Link><LogoutButton /></div>
     </header>
     <section className="mb-16 max-w-[760px]" aria-labelledby="analytics-heading">
       <h2 id="analytics-heading" className="text-xs font-normal text-neutral-500">방문 통계</h2>
