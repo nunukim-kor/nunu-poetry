@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { SanmoonViewTracker } from "@/app/analytics-tracker";
 import { publishedSanmoonEntry } from "@/lib/sanmoon";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,7 @@ export default async function SanmoonDetailPage({ params }: { params: Promise<{ 
   const essay = await publishedSanmoonEntry((await params).slug);
   if (!essay) notFound();
   return <main id="main-content" tabIndex={-1} className="page pt-28 pb-32">
+    <SanmoonViewTracker sanmoonId={essay.id} />
     <article className="max-w-[680px]">
       <h1 className="book-type text-[23px] font-normal leading-relaxed">{essay.title}</h1>
       {essay.description && <p className="mt-5 text-sm leading-relaxed text-neutral-500">{essay.description}</p>}

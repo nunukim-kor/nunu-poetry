@@ -38,6 +38,18 @@ export function PoemViewTracker({ poemId, bookSlug }: { poemId: string; bookSlug
   return null;
 }
 
+export function SanmoonViewTracker({ sanmoonId }: { sanmoonId: string }) {
+  const sentSanmoonId = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (sentSanmoonId.current === sanmoonId) return;
+    sentSanmoonId.current = sanmoonId;
+    void fetch("/api/analytics", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: sessionId(), sanmoonId }), keepalive: true });
+  }, [sanmoonId]);
+
+  return null;
+}
+
 export function BookVisitTracker({ bookSlug }: { bookSlug: string }) {
   const sentBookSlug = useRef<string | undefined>(undefined);
 

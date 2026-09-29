@@ -33,6 +33,10 @@ export async function publishedSanmoonEntry(slug: string) {
   return (await read()).find((item) => item.slug === slug && item.published);
 }
 
+export async function publishedSanmoonEntryById(id: string) {
+  return (await read()).find((item) => item.id === id && item.published);
+}
+
 export async function adminSanmoon() {
   return ordered(await read());
 }
