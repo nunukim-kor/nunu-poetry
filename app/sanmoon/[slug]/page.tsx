@@ -10,7 +10,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!essay) return {};
   const description = essay.description || `김누누의 산문 「${essay.title}」`;
   return {
-    title: essay.title,
     description,
     alternates: { canonical: `/sanmoon/${essay.slug}` },
     openGraph: { type: "article", title: `${essay.title} — 김누누`, description, url: `/sanmoon/${essay.slug}` },

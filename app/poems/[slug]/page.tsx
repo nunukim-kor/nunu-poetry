@@ -11,7 +11,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const poem = await publishedPoem((await params).slug);
   if (!poem) return {};
   return {
-    title: poem.title,
     description: `김누누의 시 「${poem.title}」`,
     alternates: { canonical: `/poems/${poem.id}` },
     openGraph: {
