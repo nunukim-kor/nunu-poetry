@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://nunukim.kr"),
-  title: "KIMNUNU",
+  title: "nunupoetry",
   description: "김누누 시인 공식 홈페이지. 시인 김누누의 시와 시집을 발표합니다.",
   keywords: ["김누누", "김누누 시인", "시인 김누누", "김누누 시", "한국 시인", "현대시"],
   authors: [{ name: "김누누", url: "https://nunukim.kr" }],
