@@ -6,6 +6,7 @@ import { adminSanmoon } from "@/lib/sanmoon";
 import LogoutButton from "./logout-button";
 import PoemList from "./poem-list";
 
+export const metadata = { title: "nunupoetry - admin" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {

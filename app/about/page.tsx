@@ -1,5 +1,6 @@
 import { readAbout } from "@/lib/about";
 
+export const metadata = { title: "nunupoetry - about" };
 export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {

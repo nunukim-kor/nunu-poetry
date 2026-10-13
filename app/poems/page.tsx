@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { publishedPoems } from "@/lib/poems";
 
+export const metadata = { title: "nunupoetry - poems" };
 export const dynamic = "force-dynamic";
 
 const pageSize = 5;

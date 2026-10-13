@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { publishedSanmoon } from "@/lib/sanmoon";
 
+export const metadata = { title: "nunupoetry - sanmoon" };
 export const dynamic = "force-dynamic";
 
 export default async function SanmoonPage() {
