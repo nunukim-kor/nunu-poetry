@@ -1,10 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { publishedPoems } from "@/lib/poems";
 
 export const metadata = { title: "nunupoetry - poems" };
 export const dynamic = "force-dynamic";
 
-const pageSize = 5;
+const pageSize = 4;
 
 export default async function PoemsPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const poems = await publishedPoems();
@@ -16,11 +17,19 @@ export default async function PoemsPage({ searchParams }: { searchParams: Promis
 
   return <main id="main-content" tabIndex={-1} className="page pt-32 pb-32">
     <h1 className="sr-only">시 목록</h1>
-    <ul className="max-w-[680px]">
-      {visiblePoems.map((poem) => <li key={poem.id}><Link href={`/poems/${poem.id}`} className="grid grid-cols-[1fr_auto] gap-8 py-7 no-underline hover:no-underline"><span className="book-type text-[19px] leading-relaxed">{poem.title}</span><time className="pt-1.5 text-[12px] text-neutral-500" dateTime={poem.date}>{poem.date}</time></Link></li>)}
+    <ul className="grid grid-cols-2 gap-x-6 gap-y-14 sm:grid-cols-4 sm:gap-x-8">
+      {visiblePoems.map((poem) => <li key={poem.id}>
+        <Link href={`/poems/${poem.id}`} className="block no-underline hover:no-underline">
+          <div className="relative aspect-square overflow-hidden bg-[#f1eee4]">
+            {poem.coverImage && <Image src={poem.coverImage} alt={`${poem.title} 표지 이미지`} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover" />}
+          </div>
+        </Link>
+        <h2 className="book-type mt-5 text-[17px] font-normal leading-relaxed"><Link href={`/poems/${poem.id}`}>{poem.title}</Link></h2>
+        <time className="mt-1 block text-[12px] text-neutral-500" dateTime={poem.date}>{poem.date}</time>
+      </li>)}
     </ul>
     {poems.length === 0 && <p className="book-type">아직 발표된 시가 없습니다.</p>}
-    {pageCount > 1 && <nav className="mt-12 flex max-w-[680px] justify-center gap-9 text-[14px]" aria-label="시 목록 페이지 이동">
+    {pageCount > 1 && <nav className="mt-16 flex justify-center gap-9 text-[14px]" aria-label="시 목록 페이지 이동">
       {currentPage > 1 && <Link href={href(currentPage - 1)}>Previous</Link>}
       {currentPage < pageCount && <Link href={href(currentPage + 1)}>Next</Link>}
     </nav>}
