@@ -21,7 +21,7 @@ export default async function PoemsPage({ searchParams }: { searchParams: Promis
       {visiblePoems.map((poem) => <li key={poem.id}>
         <Link href={`/poems/${poem.id}`} className="block no-underline hover:no-underline">
           <div className="relative aspect-square overflow-hidden bg-[#f1eee4]">
-            {poem.coverImage && <Image src={poem.coverImage} alt={`${poem.title} 표지 이미지`} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover" />}
+            {poem.coverImage && <Image src={poem.coverImage} alt={`${poem.title} 표지 이미지`} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-contain" />}
           </div>
         </Link>
         <h2 className="book-type mt-5 text-[17px] font-normal leading-relaxed"><Link href={`/poems/${poem.id}`}>{poem.title}</Link></h2>

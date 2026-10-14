@@ -1680,7 +1680,8 @@
     ],
     "visibility": "public",
     "date": "2026-09-09",
-    "independentlyPublished": true
+    "independentlyPublished": true,
+    "coverImage": "/poem-covers/Iknowwillbethereyou.jpg"
   },
   {
     "id": "73eae0c5-050d-48f3-96b0-f997164a9117",
@@ -1701,6 +1702,7 @@
     ],
     "visibility": "public",
     "date": "2026-10-14",
-    "independentlyPublished": true
+    "independentlyPublished": true,
+    "coverImage": "/poem-covers/squeretrianglecircle.jpg"
   }
 ]
