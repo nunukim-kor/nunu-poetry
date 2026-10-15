@@ -16,7 +16,7 @@ button, input, textarea { font: inherit; }
 .poem-line { display: block; text-indent: 1.5em; }
 .home-cover-feature { width: fit-content; margin-inline: auto; }
 .home-cover { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(241, 238, 228, .72); }
-.home-poem-cover { width: min(72vw, 420px); aspect-ratio: 1 / 1; }
+.home-poem-cover { width: min(70vw, 300px); aspect-ratio: 176 / 250; background: #f1eee4; }
 .home-book-cover { width: min(62vw, 320px); aspect-ratio: 2 / 3; }
 .home-cover-title { max-width: 80%; text-align: center; font-size: 21px; line-height: 1.7; }
 .poem-reader { position: relative; }

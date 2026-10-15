@@ -20,7 +20,7 @@ export default async function Home() {
       <Link href={item.href} className="block w-fit no-underline hover:no-underline" aria-label={`${item.type} ${item.title} 읽기`}>
         <div className={item.book ? "home-cover home-book-cover" : "home-cover home-poem-cover"}>
           {item.cover
-            ? <Image src={item.cover} alt={`${item.title} 표지`} fill priority sizes={item.book ? "320px" : "420px"} className="object-cover" />
+            ? <Image src={item.cover} alt={`${item.title} 표지`} fill priority sizes={item.book ? "320px" : "300px"} className="object-contain" />
             : <span className="home-cover-title book-type">{item.title}</span>}
         </div>
         <p className="mt-6 text-xs text-neutral-500">{item.type} · {item.date}</p>
