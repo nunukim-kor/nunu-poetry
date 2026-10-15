@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PoemViewTracker } from "@/app/analytics-tracker";
-import PoemLines from "@/app/poem-lines";
+import PoemReader from "@/app/poem-reader";
 import { publishedBook } from "@/lib/books";
 
 export const dynamic = "force-dynamic";
@@ -13,18 +13,12 @@ export default async function BookPoemPage({ params }: { params: Promise<{ slug:
   const index = book.poems.findIndex((poem) => poem.id === poemId);
   if (index < 0) notFound();
   const poem = book.poems[index];
-  const previous = book.poems[index - 1];
   const next = book.poems[index + 1];
-  return <main id="main-content" tabIndex={-1} className="page pt-28 pb-32">
+  return <main id="main-content" tabIndex={-1} className="page pt-20 pb-32">
     <PoemViewTracker poemId={poem.id} bookSlug={book.slug} />
-    <article className="max-w-[580px]">
-      <p className="mb-12 text-xs text-neutral-500"><Link href={`/books/${book.slug}`}>수록 시집 · {book.title}</Link></p>
-      <h1 className="poem-title book-type mb-16 text-[23px] font-normal leading-relaxed">{poem.title}</h1>
-      <div className="poem-body"><PoemLines lines={poem.body} /></div>
-    </article>
-    <nav className="mt-40 flex max-w-[580px] justify-center gap-9 text-[14px]" aria-label="책 안의 시 이동">
-      {previous ? <Link href={`/books/${book.slug}/${previous.id}`} aria-label={`이전 시: ${previous.title}`}>Previous</Link> : <span className="text-neutral-300" aria-hidden="true">Previous</span>}
-      {next ? <Link href={`/books/${book.slug}/${next.id}`} aria-label={`다음 시: ${next.title}`}>Next</Link> : <span className="text-neutral-300" aria-hidden="true">Next</span>}
-    </nav>
+    <p className="mb-8 text-xs text-neutral-500"><Link href={`/books/${book.slug}`}>수록 시집 · {book.title}</Link></p>
+    <PoemReader title={poem.title} lines={poem.body} finalNavigation={next
+      ? <Link href={`/books/${book.slug}/${next.id}`} aria-label={`다음 시: ${next.title}`}>다음 시</Link>
+      : <Link href={`/books/${book.slug}`}>시집으로 돌아가기</Link>} />
   </main>;
 }

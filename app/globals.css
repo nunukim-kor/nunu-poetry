@@ -14,9 +14,20 @@ button, input, textarea { font: inherit; }
 .book-type { font-family: inherit; }
 .poem-body { white-space: pre-wrap; font-size: 19px; line-height: 2.15; letter-spacing: -0.01em; }
 .poem-line { display: block; text-indent: 1.5em; }
+.home-cover-feature { width: fit-content; margin-inline: auto; }
+.home-cover { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgba(241, 238, 228, .72); }
+.home-poem-cover { width: min(72vw, 420px); aspect-ratio: 1 / 1; }
+.home-book-cover { width: min(62vw, 320px); aspect-ratio: 2 / 3; }
+.home-cover-title { max-width: 80%; text-align: center; font-size: 21px; line-height: 1.7; }
+.poem-reader { position: relative; }
+.poem-reader-sheet { height: min(62vh, 680px); min-height: 420px; overflow: hidden; }
+.poem-reader-page { animation: poem-page-enter 180ms ease-out; }
+.poem-reader-measure { position: absolute; left: 0; top: 0; z-index: -1; width: 100%; visibility: hidden; pointer-events: none; }
+@keyframes poem-page-enter { from { opacity: 0; transform: translateX(7px); } to { opacity: 1; transform: translateX(0); } }
 .sanmoon-body { font-size: 17px; line-height: 2.1; letter-spacing: -0.01em; }
 .sanmoon-paragraph { margin: 0 0 1.45em; text-indent: 1.5em; }
 .skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 50; padding: .55rem .8rem; background: #181818; color: #fff; transform: translateY(-200%); }
 .skip-link:focus { transform: translateY(0); }
 [id="main-content"]:focus { outline: none; }
-@media (max-width: 640px) { .page { width: min(100% - 48px, 1120px); } .poem-title { font-size: 20px; } .poem-body { font-size: 15.5px; line-height: 2.05; } .sanmoon-body { font-size: 15.5px; line-height: 2.05; } }
+@media (max-width: 640px) { .page { width: min(100% - 48px, 1120px); } .poem-title { font-size: 19px; } .poem-body { font-size: 15px; line-height: 2; } .poem-reader-sheet { height: min(60svh, 560px); min-height: 370px; } .sanmoon-body { font-size: 15.5px; line-height: 2.05; } }
+@media (prefers-reduced-motion: reduce) { .poem-reader-page { animation: none; } }

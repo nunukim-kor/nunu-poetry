@@ -5,17 +5,17 @@ import { useRouter } from "next/navigation";
 
 type Visibility = "public" | "private" | "book_only";
 type ListPoem = { id: string; title: string; visibility: Visibility };
-type EditorBook = { id?: string; title: string; slug: string; description?: string; cover?: string; published: boolean; featuredOnHome?: boolean; poemIds: string[]; bookOnlyPoemIds?: string[] };
+type EditorBook = { id?: string; title: string; slug: string; date?: string; description?: string; cover?: string; published: boolean; poemIds: string[]; bookOnlyPoemIds?: string[] };
 type NewPoem = { key: number; title: string; body: string; bookOnly: boolean };
 
 export default function BookEditor({ book, poems }: { book?: EditorBook; poems: ListPoem[] }) {
   const router = useRouter();
   const [title, setTitle] = useState(book?.title ?? "");
   const [slug, setSlug] = useState(book?.slug ?? "");
+  const [date, setDate] = useState(book?.date ?? (!book ? new Date().toISOString().slice(0, 10) : ""));
   const [description, setDescription] = useState(book?.description ?? "");
   const [cover, setCover] = useState(book?.cover ?? "");
   const [published, setPublished] = useState(book?.published ?? false);
-  const [featuredOnHome, setFeaturedOnHome] = useState(book?.featuredOnHome ?? false);
   const [poemIds, setPoemIds] = useState(book?.poemIds.filter((id) => poems.some((poem) => poem.id === id)) ?? []);
   const [bookOnlyPoemIds, setBookOnlyPoemIds] = useState(book?.bookOnlyPoemIds ?? []);
   const [newPoems, setNewPoems] = useState<NewPoem[]>([]);
@@ -40,7 +40,7 @@ export default function BookEditor({ book, poems }: { book?: EditorBook; poems: 
     event.preventDefault(); setSaving(true); setError("");
     const response = await fetch(book?.id ? `/api/admin/books/${book.id}` : "/api/admin/books", {
       method: book?.id ? "PATCH" : "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, slug, description: description || undefined, cover: cover || undefined, published, featuredOnHome: published && featuredOnHome, poemIds, bookOnlyPoemIds: bookOnlyPoemIds.filter((id) => poemIds.includes(id)), newPoems: newPoems.map((poem) => ({ title: poem.title, body: poem.body.split("\n"), bookOnly: poem.bookOnly })) })
+      body: JSON.stringify({ title, slug, date: date || undefined, description: description || undefined, cover: cover || undefined, published, poemIds, bookOnlyPoemIds: bookOnlyPoemIds.filter((id) => poemIds.includes(id)), newPoems: newPoems.map((poem) => ({ title: poem.title, body: poem.body.split("\n"), bookOnly: poem.bookOnly })) })
     });
     setSaving(false);
     if (!response.ok) return setError((await response.json()).error ?? "저장할 수 없습니다.");
@@ -56,6 +56,8 @@ export default function BookEditor({ book, poems }: { book?: EditorBook; poems: 
   return <form onSubmit={save} className="max-w-[680px]">
     <label className="block text-xs" htmlFor="book-title">제목</label><input id="book-title" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-2 w-full border-b border-neutral-300 bg-transparent py-2 text-lg" required maxLength={180} />
     <label className="mt-8 block text-xs" htmlFor="book-slug">slug</label><input id="book-slug" value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase())} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="first-book" className="mt-2 w-full border-b border-neutral-300 bg-transparent py-2" required />
+    <label className="mt-8 block text-xs" htmlFor="book-date">발표일</label><input id="book-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-2 border-b border-neutral-300 bg-transparent py-2" />
+    <p className="mt-2 text-xs text-neutral-500">홈에는 발표일이 가장 최근인 시 또는 시집이 자동으로 표시됩니다.</p>
     <label className="mt-8 block text-xs" htmlFor="book-description">설명 (선택)</label><textarea id="book-description" value={description} onChange={(e) => setDescription(e.target.value)} className="mt-2 min-h-28 w-full resize-y border border-neutral-300 bg-transparent p-3" maxLength={4000} />
     <label className="mt-8 block text-xs" htmlFor="book-cover">표지 이미지 경로 (선택)</label><input id="book-cover" value={cover} onChange={(e) => setCover(e.target.value)} placeholder="/covers/book.jpg" className="mt-2 w-full border-b border-neutral-300 bg-transparent py-2" />
     <fieldset className="mt-12"><legend className="text-xs">기존 작품 추가 및 순서</legend>
@@ -69,8 +71,7 @@ export default function BookEditor({ book, poems }: { book?: EditorBook; poems: 
       <button type="button" onClick={addNewPoem} className="mt-4 text-xs underline underline-offset-4">책 마지막에 추가</button>
       {newPoems.length > 0 && <ol className="mt-6">{newPoems.map((poem, index) => <li key={poem.key} className="flex justify-between border-b border-neutral-100 py-3"><span><span className="mr-4 text-xs text-neutral-400">{poemIds.length + index + 1}</span>{poem.title}{poem.bookOnly && <span className="ml-3 text-xs text-neutral-400">Books 전용</span>}</span><button type="button" onClick={() => setNewPoems((items) => items.filter((item) => item.key !== poem.key))} className="text-xs text-neutral-500">제외</button></li>)}</ol>}
     </fieldset>
-    <label className="mt-10 flex items-center gap-2 text-xs"><input type="checkbox" checked={published} onChange={(e) => { setPublished(e.target.checked); if (!e.target.checked) setFeaturedOnHome(false); }} />공개</label>
-    <label className="mt-4 flex items-center gap-2 text-xs"><input type="checkbox" checked={featuredOnHome} onChange={(e) => setFeaturedOnHome(e.target.checked)} disabled={!published} />홈에 새 시집으로 표시</label>
+    <label className="mt-10 flex items-center gap-2 text-xs"><input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />공개</label>
     <div className="mt-10 flex gap-7"><button disabled={saving} className="underline underline-offset-4 disabled:text-neutral-400">{saving ? "저장 중" : "저장"}</button>{book?.id && <button type="button" onClick={removeBook} className="text-xs text-neutral-500 underline underline-offset-4">책 삭제</button>}</div>{error && <p className="mt-5 text-xs text-red-700" role="alert">{error}</p>}
   </form>;
 }

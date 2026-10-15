@@ -9,7 +9,7 @@ type DiscoveryPoem = { id: string; title: string };
 const viewedPoemIds = new Set<string>();
 const readingHistory: string[] = [];
 
-export default function RandomDiscoveryNext({ currentId, poems, resetOnMount = false, showPrevious = false }: { currentId: string; poems: DiscoveryPoem[]; resetOnMount?: boolean; showPrevious?: boolean }) {
+export default function RandomDiscoveryNext({ currentId, poems, resetOnMount = false, showPrevious = false, label = "Next" }: { currentId: string; poems: DiscoveryPoem[]; resetOnMount?: boolean; showPrevious?: boolean; label?: string }) {
   const router = useRouter();
   const [, refreshNavigation] = useState(0);
 
@@ -43,7 +43,7 @@ export default function RandomDiscoveryNext({ currentId, poems, resetOnMount = f
       ? <button type="button" onClick={goToPreviousPoem} aria-label="이번 감상에서 직전에 읽은 시">Previous</button>
       : <span className="text-neutral-300" aria-hidden="true">Previous</span>)}
     {hasNext
-      ? <button type="button" onClick={goToNextPoem} aria-label="이번 감상 동안 아직 읽지 않은 시 중 무작위 다음 시">Next</button>
-      : <span className="text-neutral-300" aria-hidden="true">Next</span>}
+      ? <button type="button" onClick={goToNextPoem} aria-label="이번 감상 동안 아직 읽지 않은 시 중 무작위 다음 시">{label}</button>
+      : <span className="text-neutral-300" aria-hidden="true">{label}</span>}
   </>;
 }
