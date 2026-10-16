@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { publishedPoems } from "@/lib/poems";
+import { PoemCover } from "./poem-cover";
 
 export const metadata = { title: "nunupoetry - poems" };
 export const dynamic = "force-dynamic";
@@ -20,9 +20,7 @@ export default async function PoemsPage({ searchParams }: { searchParams: Promis
     <ul className="grid grid-cols-2 gap-x-6 gap-y-14 sm:grid-cols-4 sm:gap-x-8">
       {visiblePoems.map((poem) => <li key={poem.id}>
         <Link href={`/poems/${poem.id}`} className="block no-underline hover:no-underline">
-          <div className="relative aspect-[176/250] w-full max-w-[176px] overflow-hidden bg-[#f1eee4]">
-            {poem.coverImage && <Image src={poem.coverImage} alt={`${poem.title} 표지 이미지`} fill sizes="(max-width: 640px) 50vw, 176px" className="object-contain" />}
-          </div>
+          <PoemCover src={poem.coverImage} title={poem.title} />
         </Link>
         <h2 className="book-type mt-5 text-[17px] font-normal leading-relaxed"><Link href={`/poems/${poem.id}`}>{poem.title}</Link></h2>
         <time className="mt-1 block text-[12px] text-neutral-500" dateTime={poem.date}>{poem.date}</time>
