@@ -8,6 +8,25 @@ function sql() {
   return process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : undefined;
 }
 
+type AnalyticsQuery = NonNullable<ReturnType<typeof sql>>;
+let sanmoonTableReady: Promise<void> | undefined;
+
+function ensureSanmoonTable(query: AnalyticsQuery) {
+  if (!sanmoonTableReady) {
+    sanmoonTableReady = query`
+      CREATE TABLE IF NOT EXISTS sanmoon_view_counts (
+        sanmoon_id TEXT PRIMARY KEY,
+        view_count BIGINT NOT NULL DEFAULT 0 CHECK (view_count >= 0),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )
+    `.then(() => undefined).catch((error) => {
+      sanmoonTableReady = undefined;
+      throw error;
+    });
+  }
+  return sanmoonTableReady;
+}
+
 export async function recordVisitorSession(sessionHash: string) {
   const query = sql();
   if (!query) return;
@@ -32,6 +51,7 @@ export async function recordSanmoonView(sanmoonId: string) {
   const query = sql();
   if (!query) return;
   try {
+    await ensureSanmoonTable(query);
     await query`INSERT INTO sanmoon_view_counts (sanmoon_id, view_count, updated_at) VALUES (${sanmoonId}, 1, now()) ON CONFLICT (sanmoon_id) DO UPDATE SET view_count = sanmoon_view_counts.view_count + 1, updated_at = now()`;
   } catch {
     // Analytics must never interrupt reading.
@@ -66,6 +86,7 @@ export async function analyticsStats(): Promise<AnalyticsStats> {
       // Existing analytics remain available until the book table is initialized.
     }
     try {
+      await ensureSanmoonTable(query);
       const sanmoonCounts = await query`SELECT sanmoon_id, view_count::text AS view_count FROM sanmoon_view_counts`;
       sanmoonViews = new Map(sanmoonCounts.map((row) => [String(row.sanmoon_id), Number(row.view_count)]));
     } catch {
