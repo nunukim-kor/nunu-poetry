@@ -12,6 +12,7 @@ export type Sanmoon = {
   body: string[];
   description: string;
   published: boolean;
+  publishAt?: string;
 };
 
 const file = path.join(process.cwd(), "data", "sanmoon.json");
@@ -25,16 +26,23 @@ async function write(items: Sanmoon[]) {
   await fs.writeFile(file, JSON.stringify(items, null, 2) + "\n", "utf8");
 }
 
+export function isSanmoonPublished(item: Sanmoon, now = Date.now()) {
+  if (!item.published) return false;
+  if (!item.publishAt) return true;
+  const publishTime = Date.parse(item.publishAt);
+  return Number.isFinite(publishTime) && publishTime <= now;
+}
+
 export async function publishedSanmoon() {
-  return ordered((await read()).filter((item) => item.published));
+  return ordered((await read()).filter((item) => isSanmoonPublished(item)));
 }
 
 export async function publishedSanmoonEntry(slug: string) {
-  return (await read()).find((item) => item.slug === slug && item.published);
+  return (await read()).find((item) => item.slug === slug && isSanmoonPublished(item));
 }
 
 export async function publishedSanmoonEntryById(id: string) {
-  return (await read()).find((item) => item.id === id && item.published);
+  return (await read()).find((item) => item.id === id && isSanmoonPublished(item));
 }
 
 export async function adminSanmoon() {

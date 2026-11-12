@@ -4,6 +4,7 @@ import { publishedPoems } from "@/lib/poems";
 import { publishedSanmoon } from "@/lib/sanmoon";
 
 const origin = "https://nunukim.kr";
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [poems, books, sanmoon] = await Promise.all([publishedPoems(), publishedBooks(), publishedSanmoon()]);
