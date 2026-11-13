@@ -1,7 +1,9 @@
 "use client";
 
 import { type ReactNode, type TouchEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import PoemLines from "@/app/poem-lines";
+import { clearPoemBookmark, readPoemBookmark, savePoemBookmark, type PoemBookmark } from "@/app/poem-bookmark";
 
 type PageRange = { start: number; end: number };
 
@@ -48,11 +50,16 @@ function calculatePages(lines: string[], heights: number[], capacity: number): P
 }
 
 export default function PoemReader({ title, lines, finalNavigation }: { title: string; lines: string[]; finalNavigation: ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
   const sheetRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<number | null>(null);
+  const restoredPath = useRef<string | null>(null);
   const [pages, setPages] = useState<PageRange[]>([{ start: 0, end: lines.length }]);
   const [pageIndex, setPageIndex] = useState(0);
+  const [bookmark, setBookmark] = useState<PoemBookmark | null>(null);
+  const [hasMeasured, setHasMeasured] = useState(false);
 
   useLayoutEffect(() => {
     const sheet = sheetRef.current;
@@ -65,6 +72,7 @@ export default function PoemReader({ title, lines, finalNavigation }: { title: s
       const nextPages = calculatePages(lines, heights, sheet.clientHeight);
       setPages(nextPages);
       setPageIndex((current) => Math.min(current, Math.max(nextPages.length - 1, 0)));
+      setHasMeasured(true);
     };
 
     repaginate();
@@ -74,12 +82,59 @@ export default function PoemReader({ title, lines, finalNavigation }: { title: s
     return () => observer.disconnect();
   }, [lines]);
 
-  useEffect(() => setPageIndex(0), [title]);
+  useEffect(() => {
+    setPageIndex(0);
+    setBookmark(readPoemBookmark());
+    restoredPath.current = null;
+  }, [pathname, title]);
+
+  useEffect(() => {
+    if (!hasMeasured || !bookmark || bookmark.path !== pathname || restoredPath.current === pathname) return;
+    restoredPath.current = pathname;
+    setPageIndex(Math.min(bookmark.pageIndex, Math.max(pages.length - 1, 0)));
+  }, [bookmark, hasMeasured, pages.length, pathname]);
 
   const currentPage = pages[pageIndex] ?? pages[0];
   const isLastPage = pageIndex === pages.length - 1;
   const goPrevious = () => setPageIndex((current) => Math.max(0, current - 1));
   const goNext = () => setPageIndex((current) => Math.min(pages.length - 1, current + 1));
+
+  useEffect(() => {
+    const turnPage = (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && (target.isContentEditable || target.matches("input, textarea, select"))) return;
+      if (event.key === "ArrowLeft" && pageIndex > 0) {
+        event.preventDefault();
+        setPageIndex((current) => Math.max(0, current - 1));
+      }
+      if (event.key === "ArrowRight" && pageIndex < pages.length - 1) {
+        event.preventDefault();
+        setPageIndex((current) => Math.min(pages.length - 1, current + 1));
+      }
+    };
+    window.addEventListener("keydown", turnPage);
+    return () => window.removeEventListener("keydown", turnPage);
+  }, [pageIndex, pages.length]);
+
+  const isCurrentBookmark = bookmark?.path === pathname && bookmark.pageIndex === pageIndex;
+
+  function toggleBookmark() {
+    if (isCurrentBookmark) {
+      clearPoemBookmark();
+      setBookmark(null);
+      return;
+    }
+    const next = { path: pathname, title, pageIndex };
+    savePoemBookmark(next);
+    setBookmark(next);
+  }
+
+  function goToBookmark() {
+    if (!bookmark) return;
+    if (bookmark.path === pathname) setPageIndex(Math.min(bookmark.pageIndex, Math.max(pages.length - 1, 0)));
+    else router.push(bookmark.path);
+  }
 
   function finishSwipe(event: TouchEvent<HTMLElement>) {
     if (touchStart.current === null) return;
@@ -89,10 +144,7 @@ export default function PoemReader({ title, lines, finalNavigation }: { title: s
     if (distance < -55 && !isLastPage) goNext();
   }
 
-  return <article className="poem-reader max-w-[680px]" onKeyDown={(event) => {
-    if (event.key === "ArrowLeft" && pageIndex > 0) goPrevious();
-    if (event.key === "ArrowRight" && !isLastPage) goNext();
-  }} onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; }} onTouchEnd={finishSwipe}>
+  return <article className="poem-reader max-w-[680px]" onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; }} onTouchEnd={finishSwipe}>
     <h1 className="poem-title book-type mb-10 text-[22px] font-normal leading-relaxed">{title}</h1>
     <div ref={sheetRef} className="poem-reader-sheet" tabIndex={0} aria-label={`${title}, ${pageIndex + 1}페이지`}> 
       <div key={pageIndex} className="poem-reader-page poem-body">
@@ -106,5 +158,9 @@ export default function PoemReader({ title, lines, finalNavigation }: { title: s
       {!isLastPage && <button type="button" onClick={goNext} aria-label="다음 페이지" className="text-[18px] leading-none text-black">▶</button>}
       {isLastPage && finalNavigation}
     </nav>
+    <div className="mt-5 flex min-h-5 items-center justify-center gap-7 text-[11px] text-neutral-500" aria-label="책갈피">
+      <button type="button" onClick={toggleBookmark}>{isCurrentBookmark ? "책갈피 해제" : "현재 페이지 책갈피"}</button>
+      {bookmark && !isCurrentBookmark && <button type="button" onClick={goToBookmark}>책갈피로 이동</button>}
+    </div>
   </article>;
 }
